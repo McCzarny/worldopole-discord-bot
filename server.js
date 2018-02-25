@@ -1,5 +1,6 @@
 if (process.env.botuseenv) {
     var settings = {
+        "worldopole_host": process.env.worldopole_host,
         "api_path": process.env.api_path,
         "pokemon_list": JSON.parse(process.env.pokemon_list),
         "latitude": process.env.latitude,
@@ -38,27 +39,45 @@ async function process_results(pokemons, msg)
 var request = require('request');
 var url = settings.api_path;
 var headers = { 
-    'Host': 'lodz.pogomapy.pl',
+    'Host': `${settings.worldopole_host}`,
     'Connection': 'keep-alive',
     'Accept': 'application/json, text/javascript, */*; q=0.01',
-    'Origin': 'https://lodz.pogomapy.pl',
+    'Origin': `https://${settings.worldopole_host}`,
     'X-Requested-With': 'XMLHttpRequest',
     'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36',
     'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-    'Referer': 'https://lodz.pogomapy.pl/worldopole/pokemon/42',
+    'Referer': `https://${settings.worldopole_host}/worldopole/pokemon/42`,
     //'Accept-Encoding': 'gzip, deflate, br',
     'Accept-Language': 'pl-PL,pl;q=0.9,en-US;q=0.8,en;q=0.7',
     'Cookie': 'gsScrollPos-141=0; gsScrollPos-435=0; gsScrollPos-1865=0; PHPSESSID=56ae90db6c94b7c65bbc7736276b59ce; gs_v_GSN-765085-M=email:u439398@mvrht.net; _ga=GA1.2.305684431.1519380310; _gid=GA1.2.1131796530.1519380310; gs_u_GSN-765085-M=0a51795aa3f97ad7f6256b3a44af085c:11883:17507:1519492775394'
     };
 
+    
+var encounterIds = [];
+
+function removeEncounterId(encounter_id) {
+	for (var i = 0; i < encounterIds.length; i++) {
+		if (encounterIds[i] == encounter_id) {
+			encounterIds.splice(i, 1);
+			break;
+		}
+	}
+}
+
+function saveEncounterId(pokemon) {
+    encounterIds.push(pokemon.encounter_id);
+	var now = new Date().getTime();
+	var endTime = new Date(pokemon.disappear_time_real.replace(/-/g, '/')).getTime();
+	setTimeout(function() { removePokemonMarker(pokemon.encounter_id) }, endTime - now);
+}
+
 function scan(msg){
-    msg.reply("Ok, I will check if there is some pokemons around!")
     console.log('starting scan... Number of pokemons: ' + settings.pokemon_list.length)
     for (i=0; i<settings.pokemon_list.length; i++){
         var form = {
             'type': 'pokemon_live',
             'pokemon_id':  settings.pokemon_list[i],
-            'inmap_pokemons': [],
+            'inmap_pokemons': encounterIds,
             'ivMin': settings.ivMin,
             'ivMax': settings.ivMax
         };
@@ -110,6 +129,7 @@ bot.on('message', msg => {
 if (msg.content === 'ping') {
     msg.reply('pong');
 } else if(msg.content === 'scan') {
+    msg.reply("Ok, I will check if there is some pokemons around!")
     scan(msg)
 } else if(msg.content === 'start') {
     msg.reply('Starting periodic scan...');
@@ -128,8 +148,13 @@ if (msg.content === 'ping') {
     } else {
         msg.reply('There is no active periodic scan...');
     }
-}
-});
+} else if(msg.content === 'status') {
+    if(interval != -1) {
+        msg.reply('There is active periodic scan...');
+    } else {
+        msg.reply('There is no active periodic scan...');
+    }
+}});
 
 var http = require('http');
 http.createServer(function (req, res) {
