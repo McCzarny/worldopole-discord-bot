@@ -1,4 +1,18 @@
-var settings = require('./settings.json')
+if (process.env.botuseenv) {
+    var settings = {
+        "api_path": process.env.api_path,
+        "pokemon_list": process.env.pokemon_list,
+        "latitude": process.env.latitude,
+        "longitude": process.env.longitude,
+        "max_distance": process.env.max_distance,
+        "ivMin": process.env.ivMin,
+        "ivMax": process.env.ivMax,
+        "token": process.env.token
+    }
+} else {
+    var settings = require('./settings.json')
+}
+
 var zlib = require('zlib');
 
 async function process_results(pokemons, msg)
@@ -68,7 +82,6 @@ try {
 console.log("Starting DiscordBot\nNode version: " + process.version + "\nDiscord.js version: " + Discord.version);
 
 try {
-	var AuthDetails = require("./auth.json");
 } catch (e){
 	console.log("Please create an auth.json like auth.json.example with a bot token or an email and password.\n"+e.stack);
 	process.exit();
@@ -101,4 +114,4 @@ if (msg.content === 'ping') {
 //scanFunction()
   
 console.log("logging in with token");
-bot.login(AuthDetails.token);
+bot.login(settings.token);
