@@ -7,7 +7,8 @@ if (process.env.botuseenv) {
         "max_distance": process.env.max_distance,
         "ivMin": process.env.ivMin,
         "ivMax": process.env.ivMax,
-        "token": process.env.token
+        "token": process.env.token,
+        "port": process.env.PORT
     }
 } else {
     var settings = require('./settings.json')
@@ -116,7 +117,12 @@ if (msg.content === 'ping') {
 }
 });
 
-//scanFunction()
+var http = require('http');
+http.createServer(function (req, res) {
+  res.writeHead(200, {'Content-Type': 'text/plain'});
+  res.write('Hello!');
+  res.end();
+}).listen(settings.port);
   
 console.log("logging in with token");
 bot.login(settings.token);
