@@ -1,8 +1,8 @@
 {
   "name": "nowosolna-go-bot",
   "version": "0.0.1",
-  "description": "Pokemong GO notification bot",
-  "main": "bot.js",
+  "description": "Pokemon GO notification bot",
+  "main": "server.js",
   "author": "Maciej Czarnecki <mcczarny@gmail.com>",
   "dependencies": {
     "discord.js": "^11.3.0",
