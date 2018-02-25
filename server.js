@@ -1,7 +1,7 @@
 if (process.env.botuseenv) {
     var settings = {
         "api_path": process.env.api_path,
-        "pokemon_list": process.env.pokemon_list,
+        "pokemon_list": JSON.parse(process.env.pokemon_list),
         "latitude": process.env.latitude,
         "longitude": process.env.longitude,
         "max_distance": process.env.max_distance,
