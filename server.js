@@ -52,6 +52,7 @@ var headers = {
     };
 
 function scan(msg){
+    msg.reply("Ok, I will check if there is some pokemons around!")
     console.log('starting scan... Number of pokemons: ' + settings.pokemon_list.length)
     for (i=0; i<settings.pokemon_list.length; i++){
         var form = {
@@ -72,6 +73,8 @@ function scan(msg){
     }
 };
 
+var interval=-1
+
 process.on('unhandledRejection', (reason) => {
   console.error(reason);
   process.exit(1);
@@ -86,12 +89,6 @@ try {
 	process.exit();
 }
 console.log("Starting DiscordBot\nNode version: " + process.version + "\nDiscord.js version: " + Discord.version);
-
-try {
-} catch (e){
-	console.log("Please create an auth.json like auth.json.example with a bot token or an email and password.\n"+e.stack);
-	process.exit();
-}
 
 // Initialize Discord Bot
 console.log('Initializing bot...');
@@ -114,6 +111,23 @@ if (msg.content === 'ping') {
     msg.reply('pong');
 } else if(msg.content === 'scan') {
     scan(msg)
+} else if(msg.content === 'start') {
+    msg.reply('Starting periodic scan...');
+    if (interval != -1) {
+        msg.reply('There is already active scan.');
+    } else {
+        interval = setInterval (function () {
+            scan(msg)
+        }, 60000 * (settings.interval || 5));
+    }
+} else if(msg.content === 'stop') {
+    msg.reply('Stopping periodic scan...');
+    
+    if(interval != -1) {
+        clearInterval(interval);
+    } else {
+        msg.reply('There is no active periodic scan...');
+    }
 }
 });
 
