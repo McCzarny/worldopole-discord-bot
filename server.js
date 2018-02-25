@@ -61,6 +61,11 @@ function scan(msg){
             'ivMax': settings.ivMax
         };
         request.post({ url: url, form: form, headers: headers }, function(err, res, body) {
+            if (!body) {
+                console.log('Undefined body of response!')
+                console.log("err: " + err + " res: " + res)
+            }
+
             process_results(JSON.parse(body), msg)
         });
     }
