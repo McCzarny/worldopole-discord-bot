@@ -173,7 +173,7 @@ if (msg.content === 'ping') {
     console.log(match, msg.content)
     if (match) {
         msg.reply(`Ok, I will check if there are some pokemons in position: ${match[1]}, ${match[2]}`);
-        scan(msg, {'longitude': match[1], 'latitude': match[2]});
+        scan(msg, {'latitude': match[1], 'longitude': match[2]});
     }
 }
 
