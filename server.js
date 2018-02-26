@@ -9,7 +9,8 @@ if (process.env.botuseenv) {
         "ivMin": process.env.ivMin,
         "ivMax": process.env.ivMax,
         "token": process.env.token,
-        "port": process.env.PORT
+        "port": process.env.PORT,
+        "ping-address": process.env.ping-address 
     }
 } else {
     var settings = require('./settings.json')
@@ -184,6 +185,13 @@ http.createServer(function (req, res) {
   res.write('Hello!');
   res.end();
 }).listen(settings.port);
+
+if (settings.ping-address) {
+    console.log(`Ping address set. Running auto ping for ${settings.ping-address}`);
+    setInterval (function () {
+        request(settings.ping-address, function () {});
+    }, 60000 * (getInterval()));
+}
   
 console.log("logging in with token");
 bot.login(settings.token);
