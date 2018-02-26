@@ -59,18 +59,21 @@ async function process_results(pokemons, msg)
             var pokemon = pokemons.points[i];
             console.log(`Pokemon met criteria: ${pokemon}`);
             const newEmbed = new Discord.RichEmbed()
-            .setTitle(`Pokemon found: ${pokemon.name}`)
+            .setTitle(`${pokemon.name} found!`)
             .setDescription(`**${pokemon.name}**\nAttack: ${pokemon.individual_attack}\nDefense: ${pokemon.individual_defense}\nStamina: ${pokemon.individual_stamina}\nWill disappear: ${pokemon.disappear_time_real}`)
             .setThumbnail(`https://poketoolset.com/assets/img/pokemon/images/${pokemon.pokemon_id}.png`)
             .setURL(`https://www.google.com/maps/search/?api=1&query=${pokemon.latitude},${pokemon.longitude}`);
             msg.channel.send({embed: newEmbed});
-            saveEncounterId(pokemon.encounter_id);
+            saveEncounterId(pokemon);
         }
     }
 }
 
+var lastScan;
+
 function scan(msg){
     console.log('starting scan... Number of pokemons: ' + settings.pokemon_list.length)
+    lastScan = new Date().getTime();
     for (i=0; i<settings.pokemon_list.length; i++){
         var form = {
             'type': 'pokemon_live',
@@ -136,6 +139,7 @@ if (msg.content === 'ping') {
         interval = setInterval (function () {
             scan(msg)
         }, 60000 * (settings.interval || 5));
+        scan(msg);
     }
 } else if(msg.content === 'stop') {
     msg.reply('Stopping periodic scan...');
@@ -148,7 +152,7 @@ if (msg.content === 'ping') {
     }
 } else if(msg.content === 'status') {
     if(interval != -1) {
-        msg.reply('There is active periodic scan...');
+        msg.reply('There is an active periodic scan...');
     } else {
         msg.reply('There is no active periodic scan...');
     }
