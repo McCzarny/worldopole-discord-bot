@@ -162,7 +162,10 @@ if (msg.content === 'ping') {
     msg.reply(`Current encounterIds(${encounterIds.length}): ` + encounterIds);
 } else if (scanPointRegexp.test(msg.content)) {
     var match = scanPointRegexp.exec(msg.content);
-    scan(msg, {'longitude': match[1], 'latitude': match[2]});
+    console.log(match, msg.content)
+    if (match) {
+        scan(msg, {'longitude': match[1], 'latitude': match[2]});
+    }
 }
 
 });
