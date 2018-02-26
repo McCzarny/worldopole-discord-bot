@@ -49,12 +49,12 @@ function saveEncounterId(pokemon) {
 	setTimeout(function() { removePokemonMarker(pokemon.encounter_id) }, endTime - now);
 }
 
-async function process_results(pokemons, msg)
+async function process_results(pokemons, msg, point)
 {
     console.log('response with ' + pokemons.points.length + ' pokemons')
     for (var i = 0; i < pokemons.points.length; i++) {
-        var a = settings.longitude - pokemons.points[i].longitude;
-        var b = settings.latitude - pokemons.points[i].latitude;
+        var a = point.longitude - pokemons.points[i].longitude;
+        var b = point.latitude - pokemons.points[i].latitude;
         if ((a*a + b*b) < settings.max_distance) {
             var pokemon = pokemons.points[i];
             console.log(`Pokemon met criteria: ${pokemon}`);
@@ -71,7 +71,7 @@ async function process_results(pokemons, msg)
 
 var lastScan;
 
-function scan(msg){
+function scan(msg, point={'longitude': settings.longitude, 'latitude': settings.latitude}){
     console.log('starting scan... Number of pokemons: ' + settings.pokemon_list.length)
     lastScan = new Date().getTime();
     for (i=0; i<settings.pokemon_list.length; i++){
@@ -88,7 +88,7 @@ function scan(msg){
                 console.log("err: " + err + " res: " + res)
             }
 
-            process_results(JSON.parse(body), msg)
+            process_results(JSON.parse(body), msg, point)
         });
     }
 };
@@ -124,7 +124,9 @@ bot.on("disconnected", function () {
 bot.on('ready', () => {
     console.log(`Logged in as ${bot.user.tag}!`);
   });
-  
+
+var scanPointRegexp = /^scan ([0-9\.]+),([0-9\.]+)$/g
+
 bot.on('message', msg => {
 if (msg.content === 'ping') {
     msg.reply('pong');
@@ -158,7 +160,12 @@ if (msg.content === 'ping') {
     }
 
     msg.reply(`Current encounterIds(${encounterIds.length}): ` + encounterIds);
-}});
+} else if (scanPointRegexp.test(msg.content)) {
+    var match = scanPointRegexp.exec(msg.content);
+    scan(msg, {'longitude': match[1], 'latitude': match[2]});
+}
+
+});
 
 var http = require('http');
 http.createServer(function (req, res) {
