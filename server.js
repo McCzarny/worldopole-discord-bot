@@ -73,7 +73,7 @@ async function process_results(pokemons, msg, point)
 var lastScan;
 
 function scan(msg, point={'longitude': settings.longitude, 'latitude': settings.latitude}){
-    console.log('starting scan... Number of pokemons: ' + settings.pokemon_list.length)
+    console.log('starting scan... Number of pokemons: ' + settings.pokemon_list.length + ', point: ' + point)
     lastScan = new Date().getTime();
     for (i=0; i<settings.pokemon_list.length; i++){
         var form = {
@@ -136,7 +136,7 @@ bot.on('message', msg => {
 if (msg.content === 'ping') {
     msg.reply('pong');
 } else if(msg.content === 'scan') {
-    msg.reply("Ok, I will check if there is some pokemons around!");
+    msg.reply("Ok, I will check if there are some pokemons around!");
     scan(msg)
 } else if(msg.content === 'start') {
     msg.reply('Starting periodic scan...');
@@ -172,7 +172,7 @@ if (msg.content === 'ping') {
     var match = scanPointRegexp.exec(msg.content);
     console.log(match, msg.content)
     if (match) {
-        msg.reply(`Ok, I will check if there is some pokemons in position: ${match[1]}, ${match[2]}`);
+        msg.reply(`Ok, I will check if there are some pokemons in position: ${match[1]}, ${match[2]}`);
         scan(msg, {'longitude': match[1], 'latitude': match[2]});
     }
 }
