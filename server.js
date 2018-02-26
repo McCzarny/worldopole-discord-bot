@@ -73,7 +73,7 @@ async function process_results(pokemons, msg, point)
 var lastScan;
 
 function scan(msg, point={'longitude': settings.longitude, 'latitude': settings.latitude}){
-    console.log('starting scan... Number of pokemons: ' + settings.pokemon_list.length + ', point: ' + point)
+    console.log(`starting scan... Number of pokemons: ${settings.pokemon_list.length}, point ${point.longitude}, ${point.latitude}.`);
     lastScan = new Date().getTime();
     for (i=0; i<settings.pokemon_list.length; i++){
         var form = {
