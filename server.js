@@ -93,6 +93,10 @@ function scan(msg, point={'longitude': settings.longitude, 'latitude': settings.
     }
 };
 
+function getInterval() {
+    return settings.interval || 5;
+}
+
 var interval=-1
 
 process.on('unhandledRejection', (reason) => {
@@ -140,7 +144,7 @@ if (msg.content === 'ping') {
     } else {
         interval = setInterval (function () {
             scan(msg)
-        }, 60000 * (settings.interval || 5));
+        }, 60000 * (getInterval()));
         scan(msg);
     }
 } else if(msg.content === 'stop') {
@@ -154,7 +158,8 @@ if (msg.content === 'ping') {
     }
 } else if(msg.content === 'status') {
     if(interval != -1) {
-        msg.reply('There is an active periodic scan...');
+        var nextScan = new Date(lastScan + (getInterval() * 60 * 1000));
+        msg.reply(`There is an active periodic scan...\nLast scan was performed ${lastScan.toLocaleTimeString()} and next will be started ${nextScan.toLocaleTimeString()}.`);
     } else {
         msg.reply('There is no active periodic scan...');
     }
