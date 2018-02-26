@@ -160,7 +160,7 @@ if (msg.content === 'ping') {
     if(interval != -1) {
         var lastScanTime = new Date(lastScan).toLocaleTimeString();
         var nextScanTime = new Date(lastScan + (getInterval() * 60 * 1000)).toLocaleTimeString();
-        msg.reply(`There is an active periodic scan...\nLast scan was performed ${lastScanTIme} and next will be started ${nextScanTime}.`);
+        msg.reply(`There is an active periodic scan...\nLast scan was performed ${lastScanTime} and next will be started ${nextScanTime}.`);
     } else {
         msg.reply('There is no active periodic scan...');
     }
