@@ -161,6 +161,7 @@ if (msg.content === 'ping') {
 
     msg.reply(`Current encounterIds(${encounterIds.length}): ` + encounterIds);
 } else if (scanPointRegexp.test(msg.content)) {
+    scanPointRegexp.lastIndex = 0;
     var match = scanPointRegexp.exec(msg.content);
     console.log(match, msg.content)
     if (match) {
