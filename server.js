@@ -16,26 +16,6 @@ if (process.env.botuseenv) {
 }
 
 var zlib = require('zlib');
-
-async function process_results(pokemons, msg)
-{
-    console.log('response with ' + pokemons.points.length + ' pokemons')
-    for (var i = 0; i < pokemons.points.length; i++) {
-        var a = settings.longitude - pokemons.points[i].longitude;
-        var b = settings.latitude - pokemons.points[i].latitude;
-        if ((a*a + b*b) < settings.max_distance) {
-            var pokemon = pokemons.points[i];
-            console.log(`Pokemon met criteria: ${pokemon}`);
-            const newEmbed = new Discord.RichEmbed()
-            .setTitle(`Pokemon found: ${pokemon.name}`)
-            .setDescription(`**${pokemon.name}**\nAttack: ${pokemon.individual_attack}\nDefense: ${pokemon.individual_defense}\nStamina: ${pokemon.individual_stamina}`)
-            .setThumbnail(`https://poketoolset.com/assets/img/pokemon/images/${pokemon.pokemon_id}.png`)
-            .setURL(`https://www.google.com/maps/search/?api=1&query=${pokemon.latitude},${pokemon.longitude}`);
-            msg.channel.send({embed: newEmbed})
-        }
-    }
-}
-
 var request = require('request');
 var url = settings.api_path;
 var headers = { 
@@ -52,9 +32,7 @@ var headers = {
     'Cookie': 'gsScrollPos-141=0; gsScrollPos-435=0; gsScrollPos-1865=0; PHPSESSID=56ae90db6c94b7c65bbc7736276b59ce; gs_v_GSN-765085-M=email:u439398@mvrht.net; _ga=GA1.2.305684431.1519380310; _gid=GA1.2.1131796530.1519380310; gs_u_GSN-765085-M=0a51795aa3f97ad7f6256b3a44af085c:11883:17507:1519492775394'
     };
 
-    
 var encounterIds = [];
-
 function removeEncounterId(encounter_id) {
 	for (var i = 0; i < encounterIds.length; i++) {
 		if (encounterIds[i] == encounter_id) {
@@ -69,6 +47,26 @@ function saveEncounterId(pokemon) {
 	var now = new Date().getTime();
 	var endTime = new Date(pokemon.disappear_time_real.replace(/-/g, '/')).getTime();
 	setTimeout(function() { removePokemonMarker(pokemon.encounter_id) }, endTime - now);
+}
+
+async function process_results(pokemons, msg)
+{
+    console.log('response with ' + pokemons.points.length + ' pokemons')
+    for (var i = 0; i < pokemons.points.length; i++) {
+        var a = settings.longitude - pokemons.points[i].longitude;
+        var b = settings.latitude - pokemons.points[i].latitude;
+        if ((a*a + b*b) < settings.max_distance) {
+            var pokemon = pokemons.points[i];
+            console.log(`Pokemon met criteria: ${pokemon}`);
+            const newEmbed = new Discord.RichEmbed()
+            .setTitle(`Pokemon found: ${pokemon.name}`)
+            .setDescription(`**${pokemon.name}**\nAttack: ${pokemon.individual_attack}\nDefense: ${pokemon.individual_defense}\nStamina: ${pokemon.individual_stamina}\nWill disappear: ${pokemon.disappear_time_real}`)
+            .setThumbnail(`https://poketoolset.com/assets/img/pokemon/images/${pokemon.pokemon_id}.png`)
+            .setURL(`https://www.google.com/maps/search/?api=1&query=${pokemon.latitude},${pokemon.longitude}`);
+            msg.channel.send({embed: newEmbed});
+            saveEncounterId(pokemon.encounter_id);
+        }
+    }
 }
 
 function scan(msg){
@@ -118,7 +116,6 @@ bot.on("disconnected", function () {
 
 	console.log("Disconnected!");
 	process.exit(1); //exit node.js with an error
-
 });
 
 bot.on('ready', () => {
@@ -129,7 +126,7 @@ bot.on('message', msg => {
 if (msg.content === 'ping') {
     msg.reply('pong');
 } else if(msg.content === 'scan') {
-    msg.reply("Ok, I will check if there is some pokemons around!")
+    msg.reply("Ok, I will check if there is some pokemons around!");
     scan(msg)
 } else if(msg.content === 'start') {
     msg.reply('Starting periodic scan...');
@@ -145,6 +142,7 @@ if (msg.content === 'ping') {
     
     if(interval != -1) {
         clearInterval(interval);
+        interval = -1;
     } else {
         msg.reply('There is no active periodic scan...');
     }
@@ -154,6 +152,8 @@ if (msg.content === 'ping') {
     } else {
         msg.reply('There is no active periodic scan...');
     }
+
+    msg.reply(`Current encounterIds(${encounterIds.length}): ` + encounterIds);
 }});
 
 var http = require('http');
