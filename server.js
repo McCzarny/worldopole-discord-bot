@@ -10,7 +10,7 @@ if (process.env.botuseenv) {
         "ivMax": process.env.ivMax,
         "token": process.env.token,
         "port": process.env.PORT,
-        "ping-address": process.env.ping-address 
+        "ping_address": process.env.ping_address 
     }
 } else {
     var settings = require('./settings.json')
@@ -186,10 +186,10 @@ http.createServer(function (req, res) {
   res.end();
 }).listen(settings.port);
 
-if (settings.ping-address) {
-    console.log(`Ping address set. Running auto ping for ${settings.ping-address}`);
+if (settings.ping_address) {
+    console.log(`Ping address set. Running auto ping for ${settings.ping_address}`);
     setInterval (function () {
-        request(settings.ping-address, function () {});
+        request(settings.ping_address, function () {});
     }, 60000 * (getInterval()));
 }
   
