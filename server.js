@@ -165,6 +165,7 @@ if (msg.content === 'ping') {
     var match = scanPointRegexp.exec(msg.content);
     console.log(match, msg.content)
     if (match) {
+        msg.reply(`Ok, I will check if there is some pokemons in position: ${match[1]}, ${match[2]}`);
         scan(msg, {'longitude': match[1], 'latitude': match[2]});
     }
 }
