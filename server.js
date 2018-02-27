@@ -101,7 +101,7 @@ function getInterval() {
 function announce(text) {
     if (bot) {
         for (channel in bot.channels.array()) {
-            bot.sendMessage(channel.id, text)
+            channel.send(text);
         }
     }
 }
