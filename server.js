@@ -10,7 +10,7 @@ if (process.env.botuseenv) {
         "ivMax": process.env.ivMax,
         "token": process.env.token,
         "port": process.env.PORT,
-        "ping_address": process.env.ping_address 
+        "ping_address": process.env.ping_address
     }
 } else {
     var settings = require('./settings.json')
@@ -100,9 +100,15 @@ function getInterval() {
 
 function announce(text) {
     if (bot) {
-        for (channel in bot.channels.array()) {
-            channel.send(text);
-        }
+        bot.guilds.forEach((guild) => { //for each guild the bot is in
+            guild.channels.forEach((channel) => {
+                  if(channel.type == "text" && defaultChannel == ""
+                  && channel.permissionsFor(guild.me).has("SEND_MESSAGES")) {
+                    channel.send(text);
+                    break;
+                  }
+            })
+        });
     }
 }
 
