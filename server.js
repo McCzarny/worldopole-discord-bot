@@ -149,49 +149,50 @@ bot.on('ready', () => {
 var scanPointRegexp = /^scan ([0-9\.]+),([0-9\.]+)$/g
 
 bot.on('message', msg => {
-if (msg.content === 'ping') {
-    msg.reply('pong');
-} else if(msg.content === 'scan') {
-    msg.reply("Ok, I will check if there are some pokemons around!");
-    scan(msg)
-} else if(msg.content === 'start') {
-    msg.reply('Starting periodic scan...');
-    if (interval != -1) {
-        msg.reply('There is already active scan.');
-    } else {
-        interval = setInterval (function () {
-            scan(msg)
-        }, 60000 * (getInterval()));
-        scan(msg);
+    if (msg.content === 'ping') {
+        msg.reply('pong');
+    } else if(msg.content === 'scan') {
+        msg.reply("Ok, I will check if there are some pokemons around!");
+        scan(msg)
+    } else if(msg.content === 'start') {
+        msg.reply('Starting periodic scan...');
+        if (interval != -1) {
+            msg.reply('There is already active scan.');
+        } else {
+            interval = setInterval (function () {
+                scan(msg)
+            }, 60000 * (getInterval()));
+            scan(msg);
+        }
+    } else if(msg.content === 'stop') {
+        msg.reply('Stopping periodic scan...');
+        
+        if(interval != -1) {
+            clearInterval(interval);
+            interval = -1;
+        } else {
+            msg.reply('There is no active periodic scan...');
+        }
+    } else if(msg.content === 'status') {
+        var encounterIdsString = `Current encounterIds(${encounterIds.length}): ${encounterIds}`;
+        if(interval != -1) {
+            var lastScanTime = new Date(lastScan).toLocaleTimeString();
+            var nextScanTime = new Date(lastScan + (getInterval() * 60 * 1000)).toLocaleTimeString();
+            msg.reply(`There is an active periodic scan...\nLast scan was performed ${lastScanTime} and next will be started ${nextScanTime}.\n${encounterIdsString}`);
+        } else {
+            msg.reply(`There is no active periodic scan...\n${encounterIdsString}`);
+        }
+    } else if (msg.content.startsWith('announce')) {
+        announce(msg.content.slice(start=8));
+    } else if (scanPointRegexp.test(msg.content)) {
+        scanPointRegexp.lastIndex = 0;
+        var match = scanPointRegexp.exec(msg.content);
+        console.log(match, msg.content)
+        if (match) {
+            msg.reply(`Ok, I will check if there are some pokemons in position: ${match[1]}, ${match[2]}`);
+            scan(msg, {'latitude': match[1], 'longitude': match[2]});
+        }
     }
-} else if(msg.content === 'stop') {
-    msg.reply('Stopping periodic scan...');
-    
-    if(interval != -1) {
-        clearInterval(interval);
-        interval = -1;
-    } else {
-        msg.reply('There is no active periodic scan...');
-    }
-} else if(msg.content === 'status') {
-    var encounterIdsString = `Current encounterIds(${encounterIds.length}): ${encounterIds}`;
-    if(interval != -1) {
-        var lastScanTime = new Date(lastScan).toLocaleTimeString();
-        var nextScanTime = new Date(lastScan + (getInterval() * 60 * 1000)).toLocaleTimeString();
-        msg.reply(`There is an active periodic scan...\nLast scan was performed ${lastScanTime} and next will be started ${nextScanTime}.\n${encounterIdsString}`);
-    } else {
-        msg.reply(`There is no active periodic scan...\n${encounterIdsString}`);
-    }
-} else if (scanPointRegexp.test(msg.content)) {
-    scanPointRegexp.lastIndex = 0;
-    var match = scanPointRegexp.exec(msg.content);
-    console.log(match, msg.content)
-    if (match) {
-        msg.reply(`Ok, I will check if there are some pokemons in position: ${match[1]}, ${match[2]}`);
-        scan(msg, {'latitude': match[1], 'longitude': match[2]});
-    }
-}
-
 });
 
 var http = require('http');
