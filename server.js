@@ -98,13 +98,29 @@ function getInterval() {
     return settings.interval || 5;
 }
 
+function announce(text) {
+    if (bot) {
+        for (channel in bot.channels.array()) {
+            client.sendMessage(channel.id, text)
+        }
+    }
+}
+
 var interval=-1
 
 process.on('unhandledRejection', (reason) => {
   console.error(reason);
+  announce("Ups, I have a problem. Needs to go now.")
   process.exit(1);
 });
 
+process.on('SIGTERM', function () {
+    server.close(function () {
+        announce("Needs to go now.")
+      process.exit(0);
+    });
+  });
+  
 try {
 	var Discord = require("discord.js");
 } catch (e){
@@ -194,3 +210,4 @@ if (settings.ping_address) {
   
 console.log("logging in with token");
 bot.login(settings.token);
+announce(":robot: hello everyone!");
