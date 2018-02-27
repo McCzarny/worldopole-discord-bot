@@ -122,10 +122,8 @@ process.on('unhandledRejection', (reason) => {
 });
 
 process.on('SIGTERM', function () {
-    server.close(function () {
-        announce("Needs to go now.")
-      process.exit(0);
-    });
+    announce("Needs to go now.")
+    process.exit(0);
   });
   
 try {
@@ -151,6 +149,7 @@ bot.on("disconnected", function () {
 
 bot.on('ready', () => {
     console.log(`Logged in as ${bot.user.tag}!`);
+    announce(":robot: hello everyone!");
   });
 
 var scanPointRegexp = /^scan ([0-9\.]+),([0-9\.]+)$/g
@@ -218,4 +217,3 @@ if (settings.ping_address) {
   
 console.log("logging in with token");
 bot.login(settings.token);
-announce(":robot: hello everyone!");
