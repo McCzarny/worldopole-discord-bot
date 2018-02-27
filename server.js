@@ -64,6 +64,11 @@ async function process_results(pokemons, msg, point)
             .setDescription(`**${pokemon.name}**\nAttack: ${pokemon.individual_attack}\nDefense: ${pokemon.individual_defense}\nStamina: ${pokemon.individual_stamina}\nWill disappear: ${pokemon.disappear_time_real}`)
             .setThumbnail(`https://poketoolset.com/assets/img/pokemon/images/${pokemon.pokemon_id}.png`)
             .setURL(`https://www.google.com/maps/search/?api=1&query=${pokemon.latitude},${pokemon.longitude}`);
+
+            if (pokemon.individual_attack + pokemon.individual_defense + pokemon.individual_stamina > 40) {
+                newEmbed.setColor('[255, 255, 0]');
+            }
+
             msg.channel.send({embed: newEmbed});
             saveEncounterId(pokemon);
         }
@@ -189,7 +194,7 @@ bot.on('message', msg => {
             msg.reply(`There is no active periodic scan...\n${encounterIdsString}`);
         }
     } else if (msg.content.startsWith('announce')) {
-        announce(msg.content.slice(start=8));
+        announce(':loudspeaker: < ' + msg.content.slice(start=8));
     } else if (scanPointRegexp.test(msg.content)) {
         scanPointRegexp.lastIndex = 0;
         var match = scanPointRegexp.exec(msg.content);
