@@ -158,15 +158,14 @@ if (msg.content === 'ping') {
         msg.reply('There is no active periodic scan...');
     }
 } else if(msg.content === 'status') {
+    var encounterIdsString = `Current encounterIds(${encounterIds.length}): ${encounterIds}`;
     if(interval != -1) {
         var lastScanTime = new Date(lastScan).toLocaleTimeString();
         var nextScanTime = new Date(lastScan + (getInterval() * 60 * 1000)).toLocaleTimeString();
-        msg.reply(`There is an active periodic scan...\nLast scan was performed ${lastScanTime} and next will be started ${nextScanTime}.`);
+        msg.reply(`There is an active periodic scan...\nLast scan was performed ${lastScanTime} and next will be started ${nextScanTime}.\n${encounterIdsString}`);
     } else {
-        msg.reply('There is no active periodic scan...');
+        msg.reply(`There is no active periodic scan...\n${encounterIdsString}`);
     }
-
-    msg.reply(`Current encounterIds(${encounterIds.length}): ` + encounterIds);
 } else if (scanPointRegexp.test(msg.content)) {
     scanPointRegexp.lastIndex = 0;
     var match = scanPointRegexp.exec(msg.content);
