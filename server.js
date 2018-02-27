@@ -101,12 +101,13 @@ function getInterval() {
 function announce(text) {
     if (bot) {
         bot.guilds.forEach((guild) => { //for each guild the bot is in
-            guild.channels.forEach((channel) => {
-                  if(channel.type == "text" && defaultChannel == ""
-                  && channel.permissionsFor(guild.me).has("SEND_MESSAGES")) {
+            guild.channels.some((channel) => {
+                if(channel.type == "text" && defaultChannel == ""
+                && channel.permissionsFor(guild.me).has("SEND_MESSAGES")) {
                     channel.send(text);
-                    break;
-                  }
+                    return true;
+                }
+                return false;
             })
         });
     }
