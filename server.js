@@ -102,7 +102,7 @@ function announce(text) {
     if (bot) {
         bot.guilds.forEach((guild) => { //for each guild the bot is in
             guild.channels.some((channel) => {
-                if(channel.type == "text" && defaultChannel == ""
+                if(channel.type == "text"
                 && channel.permissionsFor(guild.me).has("SEND_MESSAGES")) {
                     channel.send(text);
                     return true;
