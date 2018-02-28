@@ -66,6 +66,7 @@ async function process_results(pokemons, msg, point)
             .setURL(`https://www.google.com/maps/search/?api=1&query=${pokemon.latitude},${pokemon.longitude}`);
 
             if (pokemon.individual_attack + pokemon.individual_defense + pokemon.individual_stamina > 40) {
+                console.log("Wonderful pokemon!");
                 newEmbed.setColor('[255, 255, 0]');
             }
 
