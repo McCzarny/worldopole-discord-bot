@@ -158,23 +158,40 @@ bot.on('ready', () => {
     announce(":robot: hello everyone!");
   });
 
-var scanPointRegexp = /^scan ([0-9\.]+),([0-9\.]+)$/g
 
 bot.on('message', msg => {
+    var scanPointRegexp = /^scan ([0-9\.]+),([0-9\.]+)$/g
+
     if (msg.content === 'ping') {
         msg.reply('pong');
     } else if(msg.content === 'scan') {
         msg.reply("Ok, I will check if there are some pokemons around!");
         scan(msg)
-    } else if(msg.content === 'start') {
-        msg.reply('Starting periodic scan...');
+    } else if(msg.content.startsWith('start')) {
         if (interval != -1) {
             msg.reply('There is already active scan.');
         } else {
-            interval = setInterval (function () {
-                scan(msg)
-            }, 60000 * (getInterval()));
-            scan(msg);
+            var startPointRegexp = /^start ([0-9\.]+),([0-9\.]+)$/g
+            if (msg.content === 'start') {
+                msg.reply('Starting periodic scan...');
+                interval = setInterval (function () {
+                    scan(msg)
+                }, 60000 * (getInterval()));
+                scan(msg);
+            } else if (startPointRegexp.test(msg.content)) {
+                startPointRegexp.lastIndex = 0;
+                var match = startPointRegexp.exec(msg.content);
+                console.log(match, msg.content)
+                if (match) {
+                    msg.reply(`Starting periodic scan in position: ${match[1]}, ${match[2]}`);
+                    interval = setInterval (function () {
+                        scan(msg, {'latitude': match[1], 'longitude': match[2]})
+                    }, 60000 * (getInterval()));
+                }
+            } else {
+                console.log(`There is something wrong with this command: [${msg.content}]`);
+                msg.reply('I do not understand this start command.');
+            }
         }
     } else if(msg.content === 'stop') {
         msg.reply('Stopping periodic scan...');
