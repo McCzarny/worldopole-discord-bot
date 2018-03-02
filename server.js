@@ -67,7 +67,7 @@ async function process_results(pokemons, msg, point)
 
             if (pokemon.individual_attack + pokemon.individual_defense + pokemon.individual_stamina > 40) {
                 console.log("Wonderful pokemon!");
-                newEmbed.setColor('[255, 255, 0]');
+                newEmbed.setColor([255, 255, 0]);
             }
 
             msg.channel.send({embed: newEmbed});
