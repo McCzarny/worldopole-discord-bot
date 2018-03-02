@@ -65,7 +65,9 @@ async function process_results(pokemons, msg, point)
             .setThumbnail(`https://poketoolset.com/assets/img/pokemon/images/${pokemon.pokemon_id}.png`)
             .setURL(`https://www.google.com/maps/search/?api=1&query=${pokemon.latitude},${pokemon.longitude}`);
 
-            if (pokemon.individual_attack + pokemon.individual_defense + pokemon.individual_stamina > 40) {
+            if (Number(pokemon.individual_attack)
+                + Number(pokemon.individual_defense)
+                + Number(pokemon.individual_stamina) > 40) {
                 console.log("Wonderful pokemon!");
                 newEmbed.setColor([255, 255, 0]);
             }
