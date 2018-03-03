@@ -222,12 +222,18 @@ bot.on('message', msg => {
         }
     } else if (msg.content === 'status') {
         var encounterIdsString = `Current encounterIds(${encounterIds.length}): ${encounterIds}`;
+        var meminfo;
+        const used = process.memoryUsage();
+        for (let key in used) {
+            meminfo += `${key} ${Math.round(used[key] / 1024 / 1024 * 100) / 100} MB\n`;
+        }
+
         if (interval != -1) {
             var lastScanTime = new Date(lastScan).toLocaleTimeString();
             var nextScanTime = new Date(lastScan + (getInterval() * 60 * 1000)).toLocaleTimeString();
-            msg.reply(`There is an active periodic scan...\nLast scan was performed ${lastScanTime} and next will be started ${nextScanTime}.\n${encounterIdsString}`);
+            msg.reply(`There is an active periodic scan...\nLast scan was performed ${lastScanTime} and next will be started ${nextScanTime}.\n${encounterIdsString}\n${meminfo}`);
         } else {
-            msg.reply(`There is no active periodic scan...\n${encounterIdsString}`);
+            msg.reply(`There is no active periodic scan...\n${encounterIdsString}\n${meminfo}`);
         }
     } else if (msg.content.startsWith('announce')) {
         announce(':loudspeaker: < ' + msg.content.slice(start = 8));
