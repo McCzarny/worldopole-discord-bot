@@ -222,7 +222,7 @@ bot.on('message', msg => {
         }
     } else if (msg.content === 'status') {
         var encounterIdsString = `Current encounterIds(${encounterIds.length}): ${encounterIds}`;
-        var meminfo;
+        var meminfo = '';
         const used = process.memoryUsage();
         for (let key in used) {
             meminfo += `${key} ${Math.round(used[key] / 1024 / 1024 * 100) / 100} MB\n`;
