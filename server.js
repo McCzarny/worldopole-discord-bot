@@ -92,7 +92,7 @@ function scan(msg, point = {
 }) {
     console.log(`starting scan... Number of pokemons: ${settings.pokemon_list.length}, point ${point.longitude}, ${point.latitude}.`);
     lastScan = new Date().getTime();
-    for (i = 0; i < settings.pokemon_list.length; i++) {
+    for (var i = 0; i < settings.pokemon_list.length; i++) {
         var form = {
             'type': 'pokemon_live',
             'pokemon_id': settings.pokemon_list[i],
@@ -121,7 +121,7 @@ function getInterval() {
 
 function announce(text) {
     if (bot) {
-        bot.guilds.forEach((guild) => { //for each guild the bot is in
+        bot.guilds.forEach((guild) => {
             guild.channels.some((channel) => {
                 if (channel.type == "text" &&
                     channel.permissionsFor(guild.me).has("SEND_MESSAGES")) {
