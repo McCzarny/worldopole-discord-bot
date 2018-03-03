@@ -61,9 +61,9 @@ async function process_results(pokemons, msg, point) {
     for (var i = 0; i < pokemons.points.length; i++) {
         var a = point.longitude - pokemons.points[i].longitude;
         var b = point.latitude - pokemons.points[i].latitude;
+        var pokemon = pokemons.points[i];
         var isWonder = Number(pokemon.individual_attack) + Number(pokemon.individual_defense) + Number(pokemon.individual_stamina) > 38;
         if ((a * a + b * b) < settings.max_distance * (isWonder ? settings.wonder_factor : 1)) {
-            var pokemon = pokemons.points[i];
             console.log(`Pokemon met criteria: ${pokemon}`);
             const newEmbed = new Discord.RichEmbed()
                 .setTitle(`${pokemon.name} found!`)
