@@ -62,11 +62,12 @@ async function process_results(pokemons, msg, point) {
         var a = point.longitude - pokemons.points[i].longitude;
         var b = point.latitude - pokemons.points[i].latitude;
         var pokemon = pokemons.points[i];
-        var isWonder = Number(pokemon.individual_attack) + Number(pokemon.individual_defense) + Number(pokemon.individual_stamina) > 38;
+        var iv = Number(pokemon.individual_attack) + Number(pokemon.individual_defense) + Number(pokemon.individual_stamina);
+        var isWonder = iv > 38;
         if ((a * a + b * b) < settings.max_distance * (isWonder ? settings.wonder_factor : 1)) {
             console.log(`Pokemon met criteria: ${pokemon}`);
             const newEmbed = new Discord.RichEmbed()
-                .setTitle(`${pokemon.name} found!`)
+                .setTitle(`${pokemon.name} ${(iv / 0.45).toFixed(2)}% found!`)
                 .setDescription(`**${pokemon.name}**\nAttack: ${pokemon.individual_attack}\nDefense: ${pokemon.individual_defense}\nStamina: ${pokemon.individual_stamina}\nWill disappear: ${pokemon.disappear_time_real}`)
                 .setThumbnail(`https://poketoolset.com/assets/img/pokemon/images/${pokemon.pokemon_id}.png`)
                 .setURL(`https://www.google.com/maps/search/?api=1&query=${pokemon.latitude},${pokemon.longitude}`);
