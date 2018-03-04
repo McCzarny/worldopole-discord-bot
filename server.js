@@ -254,7 +254,7 @@ bot.on('message', msg => {
         if (tokens.length < 3) {
             msg.reply('Wrong format. Should be "set option value"');
         } else {
-            msg.reply(`Changing settings: ${tokes[1]}=${tokes[2]}`);
+            msg.reply(`Changing settings: ${tokens[1]}=${tokens[2]}`);
             settings[tokens[1]] = tokens[2];
         }
     } else if (msg.content.startsWith('add ')) {
