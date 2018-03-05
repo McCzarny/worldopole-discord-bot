@@ -62,7 +62,7 @@ async function process_results(pokemons, msg, point) {
     for (var i = 0; i < pokemons.points.length; i++) {
         var pokemon = pokemons.points[i];
         var a = point.longitude - pokemon.longitude;
-        var b = point.latitude - pokpokemon.latitude;
+        var b = point.latitude - pokemon.latitude;
         var iv = Number(pokemon.individual_attack) + Number(pokemon.individual_defense) + Number(pokemon.individual_stamina);
         var isWonder = iv > 38;
         if ((a * a + b * b) < settings.max_distance * (isWonder ? settings.wonder_factor : 1)) {
