@@ -57,6 +57,8 @@ function saveEncounterId(pokemon) {
     }, endTime - now);
 }
 
+var map_style = "style=feature:landscape.man_made|geometry.fill|color:0xa1f199&style=feature:landscape.natural.landcover|geometry.fill|color:0x37bda2&style=feature:landscape.natural.terrain|geometry.fill|color:0x37bda2&style=feature:road|geometry.fill|color:0x84b09e"
+
 async function process_results(pokemons, msg, point) {
     console.log('response with ' + pokemons.points.length + ' pokemons')
     for (var i = 0; i < pokemons.points.length; i++) {
@@ -72,7 +74,7 @@ async function process_results(pokemons, msg, point) {
                 .setDescription(`**${pokemon.name}**\nAttack: ${pokemon.individual_attack}\nDefense: ${pokemon.individual_defense}\nStamina: ${pokemon.individual_stamina}\nWill disappear: ${pokemon.disappear_time_real}`)
                 .setThumbnail(`https://poketoolset.com/assets/img/pokemon/images/${pokemon.pokemon_id}.png`)
                 .setURL(`https://www.google.com/maps/search/?api=1&query=${pokemon.latitude},${pokemon.longitude}`)
-                .setImage(`http://maps.googleapis.com/maps/api/staticmap?&size=256x256&zoom=16&markers=icon:https://process.filestackapi.com/AhTgLagciQByzXpFGRI0Az/resize=width:32/https://poketoolset.com/assets/img/pokemon/images/${pokemon.pokemon_id}.png%7C${pokemon.latitude},${pokemon.longitude}&key=${settings.maps_api_key}`);
+                .setImage(`http://maps.googleapis.com/maps/api/staticmap?&size=256x256&zoom=17&${map_style}&markers=icon:https://process.filestackapi.com/AhTgLagciQByzXpFGRI0Az/resize=width:32/https://poketoolset.com/assets/img/pokemon/images/${pokemon.pokemon_id}.png%7C${pokemon.latitude},${pokemon.longitude}&key=${settings.maps_api_key}`);
 
             if (isWonder) {
                 console.log("Wonderful pokemon!");
