@@ -57,7 +57,7 @@ function saveEncounterId(pokemon) {
     }, endTime - now);
 }
 
-var map_style = "style=feature:landscape.man_made|geometry.fill|color:0xa1f199&style=feature:landscape|geometry.fill|color:0x8efe86&style=feature:landscape.natural.landcover|geometry.fill|color:0x37bda2&style=feature:landscape.natural.terrain|geometry.fill|color:0x37bda2&style=feature:road|geometry.fill|color:0x84b09e"
+var map_style = "style=feature:landscape%7Ccolor:0xafffa0&style=feature:landscape.man_made%7Ccolor:0x37bda2&style=feature:road%7Celement:geometry%7Ccolor:0x59a499&style=feature:water%7Ccolor:0x1a87d6"
 
 async function process_results(pokemons, msg, point) {
     console.log('response with ' + pokemons.points.length + ' pokemons')
