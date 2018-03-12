@@ -94,7 +94,7 @@ async function process_results(pokemons, msg, point, max_distance) {
     }
 }
 
-function sendRequest(pokemon_id, point, max_distance)
+function sendRequest(msg, pokemon_id, point, max_distance)
 {
     var form = {
         'type': 'pokemon_live',
@@ -126,15 +126,15 @@ function scan(msg, point = {
     console.log(`Starting scan, at point ${point.longitude}, ${point.latitude}.`);
     lastScan = new Date().getTime();
     for (var i = 0; i < settings.common_pokemon_list.length; i++) {
-        sendRequest(settings.common_pokemon_list[i], point, settings.common_max_distance)
+        sendRequest(msg, settings.common_pokemon_list[i], point, settings.common_max_distance)
     }
 
     for (var i = 0; i < settings.uncommon_pokemon_list.length; i++) {
-        sendRequest(settings.uncommon_pokemon_list[i], point, settings.uncommon_max_distance)
+        sendRequest(msg, settings.uncommon_pokemon_list[i], point, settings.uncommon_max_distance)
     }
 
     for (var i = 0; i < settings.rare_pokemon_list.length; i++) {
-        sendRequest(settings.rare_pokemon_list[i], point, settings.rare_max_distance)
+        sendRequest(msg, settings.rare_pokemon_list[i], point, settings.rare_max_distance)
     }
 };
 
