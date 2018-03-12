@@ -123,7 +123,7 @@ function scan(msg, point = {
     'longitude': settings.longitude,
     'latitude': settings.latitude
 }) {
-    console.log(`starting scan... Number of pokemons: ${settings.pokemon_list.length}, point ${point.longitude}, ${point.latitude}.`);
+    console.log(`Starting scan, at point ${point.longitude}, ${point.latitude}.`);
     lastScan = new Date().getTime();
     for (var i = 0; i < settings.common_pokemon_list.length; i++) {
         sendRequest(settings.common_pokemon_list[i], point, settings.common_max_distance)
@@ -285,17 +285,17 @@ bot.on('message', msg => {
             msg.reply(`Changing settings: ${tokens[1]}=${tokens[2]}`);
             settings[tokens[1]] = tokens[2];
         }
-    } else if (msg.content.startsWith('add ')) {
-        var num = Number(msg.content.substr(4));
+    } else if (msg.content.startsWith('add-common ')) {
+        var num = Number(msg.content.substr('add-common '.length));
 
         if (num) {
             msg.reply(`Adding pokemon: ${num}`);
-            settings.pokemon_list.push(num);
+            settings.common_pokemon_list.push(num);
         } else {
             msg.reply('Wrong format. Should be like "add 1"')
         }
-    } else if (msg.content.startsWith('rem ')) {
-        var num = Number(msg.content.substr(4));
+    } else if (msg.content.startsWith('rem-common ')) {
+        var num = Number(msg.content.substr('rem-common '.length));
 
         if (num) {
             msg.reply(`Removing pokemon: ${num}`);
