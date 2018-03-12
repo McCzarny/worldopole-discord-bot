@@ -4,17 +4,22 @@ if (process.env.botuseenv) {
     var settings = {
         "worldopole_host": process.env.worldopole_host,
         "api_path": process.env.api_path,
-        "pokemon_list": JSON.parse(process.env.pokemon_list),
+        "common_pokemon_list": JSON.parse(process.env.common_pokemon_list),
+        "uncommon_pokemon_list": JSON.parse(process.env.uncommon_pokemon_list),
+        "rare_pokemon_list": JSON.parse(process.env.rare_pokemon_list),
         "latitude": process.env.latitude,
         "longitude": process.env.longitude,
-        "max_distance": process.env.max_distance,
+        "common_max_distance": process.env.common_max_distance,
+        "uncommon_max_distance": process.env.uncommon_max_distance,
+        "rare_max_distance": process.env.rare_max_distance,
         "ivMin": process.env.ivMin,
         "ivMax": process.env.ivMax,
         "token": process.env.token,
         "port": process.env.PORT,
         "ping_address": process.env.ping_address,
         "wonder_factor": process.env.wonder_factor,
-        "maps_api_key": process.env.maps_api_key
+        "maps_api_key": process.env.maps_api_key,
+        "locations": JSON.parse(process.env.locations)
     }
 } else {
     var settings = require('./settings.json')
@@ -59,7 +64,7 @@ function saveEncounterId(pokemon) {
 
 var map_style = "style=feature:landscape%7Ccolor:0xafffa0&style=feature:landscape.man_made%7Ccolor:0x37bda2&style=feature:road%7Celement:geometry%7Ccolor:0x59a499&style=feature:water%7Ccolor:0x1a87d6"
 
-async function process_results(pokemons, msg, point) {
+async function process_results(pokemons, msg, point, max_distance) {
     console.log('response with ' + pokemons.points.length + ' pokemons')
     for (var i = 0; i < pokemons.points.length; i++) {
         var pokemon = pokemons.points[i];
@@ -67,7 +72,7 @@ async function process_results(pokemons, msg, point) {
         var b = point.latitude - pokemon.latitude;
         var iv = Number(pokemon.individual_attack) + Number(pokemon.individual_defense) + Number(pokemon.individual_stamina);
         var isWonder = iv > 38;
-        if ((a * a + b * b) < settings.max_distance * (isWonder ? settings.wonder_factor : 1)) {
+        if ((a * a + b * b) < max_distance * (isWonder ? settings.wonder_factor : 1)) {
             console.log(`Pokemon met criteria: ${pokemon}`);
             const newEmbed = new Discord.RichEmbed()
                 .setTitle(`${pokemon.name} ${(iv / 0.45).toFixed(2)}% found!`)
@@ -89,6 +94,29 @@ async function process_results(pokemons, msg, point) {
     }
 }
 
+function sendRequest(pokemon_id, point, max_distance)
+{
+    var form = {
+        'type': 'pokemon_live',
+        'pokemon_id': pokemon_id,
+        'inmap_pokemons': encounterIds,
+        'ivMin': settings.ivMin,
+        'ivMax': settings.ivMax
+    };
+    request.post({
+        url: url,
+        form: form,
+        headers: headers
+    }, function (err, res, body) {
+        if (!body) {
+            console.log('Undefined body of response!')
+            console.log("err: " + err + " res: " + res)
+        }
+
+        process_results(JSON.parse(body), msg, point, max_distance)
+    });
+}
+
 var lastScan;
 
 function scan(msg, point = {
@@ -97,26 +125,16 @@ function scan(msg, point = {
 }) {
     console.log(`starting scan... Number of pokemons: ${settings.pokemon_list.length}, point ${point.longitude}, ${point.latitude}.`);
     lastScan = new Date().getTime();
-    for (var i = 0; i < settings.pokemon_list.length; i++) {
-        var form = {
-            'type': 'pokemon_live',
-            'pokemon_id': settings.pokemon_list[i],
-            'inmap_pokemons': encounterIds,
-            'ivMin': settings.ivMin,
-            'ivMax': settings.ivMax
-        };
-        request.post({
-            url: url,
-            form: form,
-            headers: headers
-        }, function (err, res, body) {
-            if (!body) {
-                console.log('Undefined body of response!')
-                console.log("err: " + err + " res: " + res)
-            }
+    for (var i = 0; i < settings.common_pokemon_list.length; i++) {
+        sendRequest(settings.common_pokemon_list[i], point, settings.common_max_distance)
+    }
 
-            process_results(JSON.parse(body), msg, point)
-        });
+    for (var i = 0; i < settings.uncommon_pokemon_list.length; i++) {
+        sendRequest(settings.uncommon_pokemon_list[i], point, settings.uncommon_max_distance)
+    }
+
+    for (var i = 0; i < settings.rare_pokemon_list.length; i++) {
+        sendRequest(settings.rare_pokemon_list[i], point, settings.rare_max_distance)
     }
 };
 
@@ -215,6 +233,8 @@ bot.on('message', msg => {
                         'longitude': match[2]
                     });
                 }
+            } else if(msg.content.slice('start '.length) in settings.locations) {
+                msg.reply(`Position found ${settings.locations[msg.content.slice('start '.length)]}`)
             } else {
                 console.log(`There is something wrong with this command: [${msg.content}]`);
                 msg.reply('I do not understand this start command.');
