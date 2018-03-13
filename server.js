@@ -15,7 +15,6 @@ if (process.env.botuseenv) {
         "ivMin": process.env.ivMin,
         "ivMax": process.env.ivMax,
         "token": process.env.token,
-        "port": process.env.PORT,
         "ping_address": process.env.ping_address,
         "wonder_factor": process.env.wonder_factor,
         "maps_api_key": process.env.maps_api_key,
@@ -316,7 +315,7 @@ http.createServer(function (req, res) {
     });
     res.write('Hello!');
     res.end();
-}).listen(settings.port);
+}).listen(process.env.PORT);
 
 if (settings.ping_address) {
     console.log(`Ping address set. Running auto ping for ${settings.ping_address}`);
