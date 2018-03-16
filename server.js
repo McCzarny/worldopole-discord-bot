@@ -69,8 +69,6 @@ var headers = {
     'Cookie': 'gsScrollPos-141=0; gsScrollPos-435=0; gsScrollPos-1865=0; PHPSESSID=56ae90db6c94b7c65bbc7736276b59ce; gs_v_GSN-765085-M=email:u439398@mvrht.net; _ga=GA1.2.305684431.1519380310; _gid=GA1.2.1131796530.1519380310; gs_u_GSN-765085-M=0a51795aa3f97ad7f6256b3a44af085c:11883:17507:1519492775394'
 };
 
-console.log(`url: ${url} \nheaders: ${headers}`)
-
 var encounterIds = [];
 
 function removeEncounterId(encounterId) {
@@ -108,7 +106,6 @@ async function processResults(pokemons, msg, point, maxDistanceMetersPow) {
         var pokemon = pokemons.points[i];
         var iv = Number(pokemon.individual_attack) + Number(pokemon.individual_defense) + Number(pokemon.individual_stamina);
         var isWonder = iv >= IvWonder;
-        console.log(`Distance ${Math.sqrt(getDistanceMetersPow(point, pokemon))} meters. ${getDistanceMetersPow(point, pokemon)}`);
         if (getDistanceMetersPow(point, pokemon) <= maxDistanceMetersPow * (isWonder ? wonderDistanceFactor : 1)) {
             console.log(`Pokemon met criteria: ${pokemon}`);
             const newEmbed = new Discord.RichEmbed()
@@ -263,9 +260,9 @@ function getStatus() {
         meminfo += `${key} ${Math.round(used[key] / 1024 / 1024 * 100) / 100} MB\n`;
     }
 
-    if (interval != -1) {
+    if (pendingInterval != -1) {
         var lastScanTime = new Date(lastScan).toLocaleTimeString();
-        var nextScanTime = new Date(lastScan + (getInterval() * 60 * 1000)).toLocaleTimeString();
+        var nextScanTime = new Date(lastScan + (scanIntervalSeconds * 1000)).toLocaleTimeString();
         statusMessage = `There is an active periodic scan...\nLast scan was performed ${lastScanTime} and next will be started ${nextScanTime}.\n${encounterIdsString}\n${meminfo}`;
     } else {
         statusMessage = `There is no active periodic scan...\n${encounterIdsString}\n${meminfo}`;
