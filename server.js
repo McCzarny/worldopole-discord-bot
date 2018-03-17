@@ -366,7 +366,7 @@ if (pingAddress) {
     console.log(`Ping address set. Running auto ping for ${pingAddress}`);
     setInterval(function () {
         request(pingAddress, function () {});
-    }, 60000 * (getInterval()));
+    }, 5 * 60 * 1000 );
 }
 
 console.log("logging in with token");
