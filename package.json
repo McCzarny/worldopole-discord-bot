@@ -4,6 +4,7 @@
   "description": "Pokemon GO notification bot",
   "main": "server.js",
   "author": "Maciej Czarnecki <mcczarny@gmail.com>",
+  "lint": "standard",
   "dependencies": {
     "discord.js": "^11.3.0",
     "request": "^2.83.0"
