@@ -4,9 +4,21 @@
   "description": "Pokemon GO notification bot",
   "main": "server.js",
   "author": "Maciej Czarnecki <mcczarny@gmail.com>",
-  "lint": "standard",
+  "lint": "eslint",
+  "eslintConfig": {
+    "parserOptions": {
+      "ecmaVersion": 6
+    }
+  },
   "dependencies": {
     "discord.js": "^11.3.0",
     "request": "^2.83.0"
+  },
+  "devDependencies": {
+    "eslint": "^4.19.1",
+    "eslint-config-google": "^0.9.1"
+  },
+  "scripts": {
+    "lint": "node_modules/.bin/eslint server.js"
   }
 }
