@@ -1,6 +1,8 @@
 # worldopole-discord-bot
 Simple bot for discord that polls wordopole API and sends notifications
 
+[![pipeline status](https://gitlab.com/McCzarny/worldopole-discord-bot/badges/master/pipeline.svg)](https://gitlab.com/McCzarny/worldopole-discord-bot/commits/master)
+
 ## Settings
 Settings could be loaded by settings.json file or using environment variables.
 
